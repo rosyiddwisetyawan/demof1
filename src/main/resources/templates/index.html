@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rider</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+<div class="container my-2">
+
+    <div>
+        <h3>Rider List</h3>
+        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addModal">
+            Add Rider
+        </button>
+        <table id="riderTable" class = "table table-striped mt-3">
+            <thead class=".thead-light">
+            <tr>
+                <th>Name</th>
+                <th>Motor</th>
+                <th>Age</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ride:${riders}">
+                <td th:text="${ride.name}"></td>
+                <td th:text="${ride.motor}"></td>
+                <td th:text="${ride.age}"></td>
+                <td>
+                    <a class="btn btn-primary" th:attr="data-ride-id=${ride.id}, data-ride-name=${ride.name}, data-ride-motor=${ride.motor}, data-ride-age=${ride.age}"
+                       onclick="openModalAndSubmit(this)">
+                        Update
+                    </a>
+                    <a class="btn btn-danger" th:href="@{/delete/{id}(id=${ride.id})}">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function openModalAndSubmit(element) {
+            var rideId = element.getAttribute('data-ride-id');
+            var rideName = element.getAttribute('data-ride-name');
+            var rideMotor = element.getAttribute('data-ride-motor');
+            var rideAge = element.getAttribute('data-ride-age');
+
+            $('#upid').val(rideId);
+            $('#upname').val(rideName);
+            $('#upmotor').val(rideMotor);
+            $('#upage').val(rideAge);
+
+            $('#updateModal').modal('show');
+            // Perform further actions as required
+        }
+
+    </script>
+
+    <!-- AddModal -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:action="@{/save}" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="motor">Motor</label>
+                            <input type="text" class="form-control" id="motor" name="motor" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- UpdateModal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:action="@{/update}" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="upid" name="upid">
+                        <div class="form-group">
+                            <label for="upname">Name</label>
+                            <input type="text" class="form-control" id="upname" name="upname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="upmotor">Motor</label>
+                            <input type="text" class="form-control" id="upmotor" name="upmotor" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="upage">Age</label>
+                            <input type="number" class="form-control" id="upage" name="upage" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#riderTable').DataTable({
+            responsive: true,
+            paging: true,
+            lengthMenu: [5, 10, 25, 50] // Set options for the number of rows per page
+        });
+    });
+
+</script>
+</body>
+</html>
